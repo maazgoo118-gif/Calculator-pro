@@ -1,0 +1,26 @@
+name: Build APK
+
+on:
+  push:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 17
+      - name: Unzip project
+        run: unzip -q calculator-pro.zip
+      - name: Build APK
+        working-directory: calculator-pro
+        run: |
+          chmod +x gradlew
+          ./gradlew assembleDebug
+      - uses: actions/upload-artifact@v4
+        with:
+          name: calculator-pro
+          path: calculator-pro/app/build/outputs/apk/debug/*.apk
